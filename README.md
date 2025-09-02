@@ -19,5 +19,5 @@ git clone git@github.com:yourusername/dotfiles.git ~/dotfiles
 ln -s ~/dotfiles/tmux/.tmux.conf ~/.tmux.conf
 
 # Link Neovim config
-# ln -s ~/dotfiles/nvim ~/.config/nvim
+ln -s ~/dotfiles/nvim ~/.config/nvim
 
