@@ -1,0 +1,20 @@
+if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
+-- return {
+--   "jay-babu/mason-nvim-dap.nvim",
+--   opts = {
+--     handlers = {
+--       go = function(source_name)
+--         local dap = require "dap"
+--         dap.configurations.go = {
+--           {
+--             type = "delve",
+--             name = "file",
+--             request = "launch",
+--             program = "${file}",
+--             outputMode = "remote",
+--           },
+--         }
+--       end,
+--     },
+--   },
+-- }
