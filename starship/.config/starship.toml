@@ -1,0 +1,63 @@
+# Gruvbox Powerline prompt with snake icon + minimal info
+format = """
+$username\
+$directory\
+$git_branch$git_status\
+$python\
+$cmd_duration
+"""
+
+# POWERLINE SEPARATORS
+add_newline = true
+[character]
+success_symbol = ""
+error_symbol = ""
+vicmd_symbol = ""
+style = "bold #83a598"  # Gruvbox blue
+
+# USERNAME BLOCK
+[username]
+show_always = false
+format = "[ $user ]($style)"
+style_user = "bold #8ec07c"   # aqua
+style_root = "bold #fb4934"
+
+[directory]
+style = "bold bg:#83a598 fg:#1d2021"   # Gruvbox blue block
+format = "[ $path ]($style)"
+truncation_length = 8                  # More depth before truncating
+truncation_symbol = "…/"               # Clean ellipsis
+truncate_to_repo = false               # Keep full absolute path
+read_only = ""                        # Padlock icon
+read_only_style = "bg:#83a598 fg:#fb4934"
+home_symbol = "~"
+fish_style_pwd_dir_length = 2          # Show first 2 chars of each segment (e.g. /Us/lo/dev)
+use_os_path_sep = true
+
+# Change the icon for your Projects folder
+[directory.substitutions]
+"Projects" = "󰲋 Projects"
+
+# GIT BRANCH BLOCK
+[git_branch]
+symbol = " "
+format = "[ $symbol$branch ]($style)"
+style = "bold bg:#d3869b fg:#1d2021"  # purple bg
+
+# GIT STATUS overlay
+[git_status]
+format = "[$all_status]($style)"
+style = "bg:#d3869b fg:#fbf1c7"       # same bg, fg light
+
+# PYTHON BLOCK — using Nerd Font snake icon
+[python]
+symbol = " "   # change to "󰍲 " if you prefer the snake glyph
+format = "[ $symbol$virtualenv ]($style)"
+style = "bold bg:#fe8019 fg:#1d2021"  # orange bg
+
+# COMMAND DURATION (muted block)
+[cmd_duration]
+min_time = 2000
+format = "[ took $duration ]($style)"
+style = "bg:#928374 fg:#fbf1c7"
+
