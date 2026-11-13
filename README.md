@@ -4,7 +4,8 @@ Personal config, laid out as [GNU Stow](https://www.gnu.org/software/stow/) pack
 folder mirrors `$HOME`). This is a **non-Nix mirror** of my NixOS setup, so I can move to another distro
 (Arch/Fedora/Debian/...) without rebuilding it from scratch. The source of truth while I'm on NixOS is the private
 `nixos-config` repo (`home/*.nix`); the files here were generated from it (waybar JSON/CSS straight from the
-evaluated config, the Hyprland Lua verbatim).
+evaluated config, the Hyprland Lua verbatim). Last synced from `nixos-config` at `7a6b480` (2026-11-13); re-sync
+by hand when the Nix config changes, since nothing automates it.
 
 ```sh
 git clone https://github.com/harisbal/dotfiles ~/dotfiles && cd ~/dotfiles
