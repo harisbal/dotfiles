@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Renumber non-empty workspaces to 1..n in their current order, so empty ones
+# end up at the end. Windows are moved with hyprctl (Lua dispatchers, Hyprland >= 0.55).
+# Targets are always <= sources and processed ascending, so nothing collides.
+focused=$(hyprctl activewindow -j | jq -r '.address // empty')
+activews=$(hyprctl activeworkspace -j | jq -r '.id')
+
+clients=$(hyprctl clients -j | jq -c '[.[] | select(.workspace.id > 0)]')
+mapfile -t ids < <(jq -r '[.[].workspace.id] | unique | .[]' <<<"$clients")
+
+n=0
+newactive=""
+for old in "${ids[@]}"; do
+  n=$((n + 1))
+  [ "$old" = "$activews" ] && newactive=$n
+  [ "$old" = "$n" ] && continue
+  while read -r addr; do
+    hyprctl dispatch "hl.dsp.window.move({ workspace = $n, follow = false, window = \"address:$addr\" })" >/dev/null
+  done < <(jq -r --argjson w "$old" '.[] | select(.workspace.id == $w) | .address' <<<"$clients")
+done
+
+# stay on the same logical workspace (and window); if the current one was empty, go to the first free slot
+hyprctl dispatch "hl.dsp.focus({ workspace = ${newactive:-$((n + 1))} })" >/dev/null
+[ -n "$focused" ] && hyprctl dispatch "hl.dsp.focus({ window = \"address:$focused\" })" >/dev/null
+exit 0

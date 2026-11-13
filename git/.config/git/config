@@ -1,0 +1,13 @@
+[user]
+	name = harisbal
+	email = theoballisgr@gmail.com
+# No SSH key: send GitHub SSH URLs over HTTPS so the gh credential helper authenticates them.
+[url "https://github.com/"]
+	insteadOf = ssh://git@github.com/
+	insteadOf = git@github.com:
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential

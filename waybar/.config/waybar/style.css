@@ -1,93 +1,68 @@
-@import "../omarchy/current/theme/waybar.css";
+/* transopt.io brand, dark mode: deep teal + orange on teal-black surfaces */
+@define-color base     #16282c;
+@define-color mantle   #0f1e21;
+@define-color surface0 #1d3a3f;
+@define-color surface1 #234852;
+@define-color overlay  #7a8f8c;
+@define-color text     #e6ece9;
+@define-color subtext  #a3b6b3;
+@define-color teal     #3a8f93;
+@define-color orange   #ff7a3d;
+@define-color red      #f38ba8;
 
 * {
-  background-color: @background;
-  color: @foreground;
-
+  font-family: "MesloLGS Nerd Font", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
   border: none;
   border-radius: 0;
   min-height: 0;
-  font-family: 'JetBrainsMono Nerd Font';
-  font-size: 20px;
 }
 
-.modules-left {
-  margin-left: 8px;
-}
-
-.modules-right {
-  margin-right: 8px;
-}
-
-#workspaces button {
-  all: initial;
-  padding: 0 6px;
-  margin: 0 1.5px;
-  min-width: 9px;
-}
-
-#workspaces button.empty {
-  opacity: 0.5;
-}
-
-#cpu,
-#battery,
-#pulseaudio,
-#custom-omarchy,
-#custom-screenrecording-indicator,
-#custom-update {
-  min-width: 12px;
-  margin: 0 7.5px;
-}
-
-#tray {
-  margin-right: 16px;
-}
-
-#bluetooth {
-  margin-right: 17px;
-}
-
-#network {
-  margin-right: 13px;
-}
-
-#custom-expand-icon {
-  margin-right: 18px;
+window#waybar {
+  background: alpha(@mantle, 0.80);
+  border-bottom: 1px solid @surface0;
+  color: @text;
 }
 
 tooltip {
-  padding: 2px;
+  background: @base;
+  border: 1px solid @surface1;
+  border-radius: 10px;
 }
+tooltip label { color: @text; padding: 2px 4px; }
 
-#custom-update {
-  font-size: 10px;
+/* workspaces: number, with an orange underline on the active one */
+#workspaces { margin: 0 0 0 6px; }
+#workspaces button {
+  color: @text;
+  padding: 0 10px;
+  border-bottom: 2px solid @surface1;
+  transition: all 0.2s ease;
 }
+/* empty workspaces: faded, no underline; ones with windows stay bright */
+#workspaces button.empty {
+  color: @overlay;
+  opacity: 0.45;
+  border-bottom-color: transparent;
+}
+#workspaces button:hover { background: alpha(@surface0, 0.6); color: @text; opacity: 1; }
+#workspaces button.active { color: @orange; border-bottom-color: @orange; opacity: 1; }
+#workspaces button.urgent { color: @red; border-bottom-color: @red; opacity: 1; }
 
-#clock {
-  margin-left: 5px;
-}
+#window { color: @subtext; font-weight: 500; }
 
-.hidden {
-  opacity: 0;
-}
+#clock { color: @orange; }
+#language { color: @subtext; }
 
-#custom-screenrecording-indicator {
-  min-width: 12px;
-  margin-left: 5px;
-  font-size: 10px;
-  padding-bottom: 1px;
-}
+#cpu, #memory, #network, #battery { color: @teal; }
+#backlight, #pulseaudio { color: @orange; }
 
-#custom-screenrecording-indicator.active {
-  color: #a55555;
-}
+#pulseaudio.muted { color: @overlay; }
+#network.disconnected { color: @red; }
+#battery.warning:not(.charging) { color: @orange; }
+#battery.critical:not(.charging) { color: @red; }
 
-#custom-voxtype {
-  min-width: 12px;
-  margin: 0 0 0 7.5px;
-}
-
-#custom-voxtype.recording {
-  color: #a55555;
-}
+#tray { margin-right: 10px; }
+#tray > .passive { -gtk-icon-effect: dim; }
+#tray > .needs-attention { -gtk-icon-effect: highlight; }
