@@ -9,7 +9,7 @@ by hand when the Nix config changes, since nothing automates it.
 
 ```sh
 git clone https://github.com/harisbal/dotfiles ~/dotfiles && cd ~/dotfiles
-stow hypr waybar ghostty kitty fish tmux nvim git npm starship
+stow hypr waybar ghostty kitty fish tmux nvim git npm starship claude
 ```
 
 | package | what | notes |
@@ -20,6 +20,7 @@ stow hypr waybar ghostty kitty fish tmux nvim git npm starship
 | `fish` | config + `cc` (persistent Claude tmux session), `gws-*` | |
 | `tmux` | prefix `C-s`, TPM plugins (auto-installs TPM) | `prefix + I` installs plugins |
 | `nvim` | lazy.nvim, native LSP, telescope, oil, blink.cmp, ... | Neovim >= 0.11 |
+| `claude` | Claude Code status line script (`~/.claude/statusline.sh`, needs `jq`) | add `"statusLine": {"type": "command", "command": "bash ~/.claude/statusline.sh"}` to `~/.claude/settings.json` by hand (Claude rewrites that file, so it isn't stowed) |
 | `git`, `npm`, `starship` | git identity + gh credential helper, npm global prefix, prompt | run `gh auth login` once |
 
 ## Packages to install (what NixOS provided)
