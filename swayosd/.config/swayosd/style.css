@@ -1,0 +1,47 @@
+@define-color mantle   #0f1e21;
+@define-color surface1 #234852;
+@define-color overlay  #7a8f8c;
+@define-color text     #e6ece9;
+@define-color teal     #3a8f93;
+@define-color orange   #ff7a3d;
+
+window#osd {
+  border-radius: 14px;
+  border: 1px solid @surface1;
+  background: alpha(@mantle, 0.92);
+  font-family: "MesloLGS Nerd Font", sans-serif;
+  font-weight: 600;
+}
+window#osd #container { margin: 14px 20px; }
+
+window#osd image { color: @orange; }
+window#osd label { color: @text; }
+
+window#osd progressbar,
+window#osd segmentedprogress {
+  min-height: 6px;
+  min-width: 220px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+}
+window#osd trough,
+window#osd segment {
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: alpha(@teal, 0.25);
+}
+window#osd progress,
+window#osd segment.active {
+  min-height: inherit;
+  border-radius: inherit;
+  border: none;
+  background: @orange;
+}
+window#osd segment { margin-left: 6px; }
+window#osd segment:first-child { margin-left: 0; }
+
+/* muted: grey icon and bar */
+window#osd image:disabled { color: @overlay; }
+window#osd progressbar:disabled progress { background: @overlay; }

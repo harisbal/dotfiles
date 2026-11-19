@@ -4,6 +4,34 @@ local menu     = "wofi --show drun"
 
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.25 })
 
+-- Lid closed -> turn the laptop panel off so everything moves to the
+-- external screen; lid open -> bring it back. Only disables eDP-1 when
+-- another monitor is connected (logind ignores the lid while docked, so
+-- the machine stays awake). Also applied at config load, so a reload or
+-- login with the lid already shut doesn't re-light the panel.
+local laptop = "eDP-1"
+local function lid_closed()
+  local f = io.open("/proc/acpi/button/lid/LID0/state", "r")
+  if not f then return false end
+  local s = f:read("*a"); f:close()
+  return s:find("closed") ~= nil
+end
+local function has_external()
+  for _, m in ipairs(hl.get_monitors() or {}) do
+    if m.name ~= laptop then return true end
+  end
+  return false
+end
+local function laptop_off()
+  if has_external() then hl.monitor({ output = laptop, disabled = true }) end
+end
+local function laptop_on()
+  hl.monitor({ output = laptop, mode = "preferred", position = "auto", scale = 1.25 })
+end
+hl.bind("switch:on:Lid Switch",  laptop_off, { locked = true })
+hl.bind("switch:off:Lid Switch", laptop_on,  { locked = true })
+if lid_closed() then laptop_off() end
+
 hl.config({
   input = {
     kb_layout    = "us,gr",
@@ -77,6 +105,8 @@ hl.bind(mod .. " + SHIFT + E", hl.dsp.exec_cmd("uwsm stop"))
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
+-- flip the focused pair between side-by-side and stacked
+hl.bind(mod .. " + J", hl.dsp.layout("togglesplit"))
 
 -- focus with arrows
 hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -88,6 +118,19 @@ hl.bind(mod .. " + down",  hl.dsp.focus({ direction = "down" }))
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
   hl.bind(mod .. " + SHIFT + " .. dir, hl.dsp.window.swap({ direction = dir }))
   hl.bind(mod .. " + CTRL + "  .. dir, hl.dsp.window.move({ direction = dir }))
+end
+
+-- resize active window (mod+ALT+arrows or mod+ALT+h/j/k/l); hold to repeat
+local resize_step = 40
+for key, v in pairs({
+  left  = { -resize_step, 0 }, h = { -resize_step, 0 },
+  right = {  resize_step, 0 }, l = {  resize_step, 0 },
+  up    = { 0, -resize_step }, k = { 0, -resize_step },
+  down  = { 0,  resize_step }, j = { 0,  resize_step },
+}) do
+  hl.bind(mod .. " + ALT + " .. key,
+    hl.dsp.window.resize({ x = v[1], y = v[2], relative = true }),
+    { repeating = true })
 end
 
 -- screenshots (hyprshot; saves to ~/Pictures/Screenshots and copies to clipboard)
@@ -125,12 +168,13 @@ hl.bind(mod .. " + SHIFT + Tab",  hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mod .. " + mouse_down",   hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + mouse_up",     hl.dsp.focus({ workspace = "e-1" }))
 
--- volume / brightness (repeat while held, work on lock screen)
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl set 5%+"),                          { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl set 5%-"),                          { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
+-- volume / brightness via SwayOSD, which also shows the on-screen popup
+-- (repeat while held, work on lock screen)
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise --max-volume 100"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"),              { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("swayosd-client --brightness raise"),                { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("swayosd-client --brightness lower"),                { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
@@ -147,6 +191,8 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("hyprpaper")
   hl.exec_cmd("hypridle")
   hl.exec_cmd("dunst")
+  hl.exec_cmd("swayosd-server --top-margin 0.85")
   hl.exec_cmd("systemctl --user start hyprpolkitagent")
   hl.exec_cmd("nm-applet --indicator")
+  hl.exec_cmd("blueman-applet")
 end)

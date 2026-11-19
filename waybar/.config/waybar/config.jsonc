@@ -26,6 +26,15 @@
       "warning": 25
     }
   },
+  "bluetooth": {
+    "format": "󰂯",
+    "format-connected": "󰂱  {num_connections}",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "on-click": "blueman-manager",
+    "tooltip-format-connected": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}"
+  },
   "clock": {
     "calendar": {
       "format": {
@@ -40,7 +49,6 @@
     "format": "󰻠  {usage}%",
     "interval": 3
   },
-  "gtk-layer-shell": null,
   "height": 30,
   "hyprland/language": {
     "format": "󰌌  {short}",
@@ -56,24 +64,15 @@
   },
   "hyprland/workspaces": {
     "format": "{id}",
-    "on-scroll-down": "hyprctl dispatch workspace e+1",
-    "on-scroll-up": "hyprctl dispatch workspace e-1",
-    "persistent-workspaces": {
-      "*": 5
-    }
+    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
+    "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'"
   },
   "layer": "top",
-  "margin": null,
-  "margin-bottom": null,
-  "margin-left": null,
-  "margin-right": null,
-  "margin-top": null,
   "memory": {
     "format": "󰍛  {percentage}%",
     "interval": 5,
     "tooltip-format": "{used:0.1f} / {total:0.1f} GiB"
   },
-  "modules": null,
   "modules-center": [
     "clock"
   ],
@@ -88,10 +87,10 @@
     "backlight",
     "pulseaudio",
     "network",
+    "bluetooth",
     "battery",
     "tray"
   ],
-  "name": null,
   "network": {
     "format-disconnected": "󰤭  offline",
     "format-ethernet": "󰈀  wired",
@@ -99,7 +98,6 @@
     "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}"
   },
-  "output": null,
   "position": "top",
   "pulseaudio": {
     "format": "{icon}  {volume}%",
@@ -119,6 +117,5 @@
   "tray": {
     "icon-size": 16,
     "spacing": 10
-  },
-  "width": null
+  }
 }
